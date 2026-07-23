@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Tracker</title>
+  <link rel="stylesheet" href="./style.css">
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+
+<div class="container">
+
+  <header>
+    <h1>Budget Tracker</h1>
+  </header>
+
+<main class="dashboard">
+
+ <section class="card form-section">
+    <form>
+    <div class="form-group">
+    <label for="description">Description:</label>
+    <input type="text" id="description" placeholder="Enter a description">
+  </div>
+
+  <div class="form-group">
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" placeholder="0.00">
+  </div>
+
+  <div class="form-group">
+    <label for="category">Category:</label> 
+    <select id="category" required>
+      <option value="" disabled selected hidden>Select a category</option>
+      <option value="living_expenses">Living Expenses</option>
+      <option value="transportation">Transportation expenses</option>
+      <option value="personal_care">Personal care</option>
+      <option value="healthcare">Healthcare</option>
+      <option value="technology">Technology</option>
+      <option value="debt-payments">Debt payments</option>
+      <option value="savings&investments">Savings and investments</option>
+      <option value="entertainment">Entertainment</option>
+      <option value="miscellaneous">Miscellaneous expenses</option>
+    </select>
+  </div>
+
+  <button type="button" id="add-transaction">Add Transaction</button>
+  </form>
+</section> 
+
+<section class="card balance-section">
+
+  <div class="summary-balance">
+    <span>Current Balance</span>
+    <p id="current-balance">$ 0.00</p>
+  </div>
+
+  <div class="summary-item">
+    <span>Income</span>
+    <p id="total-income">$ 0.00</p>
+  </div>
+
+  <div class="summary-item">
+    <span>Expenses</span>
+    <p id="total-expenses">$ 0.00</p>
+  </div>
+
+  <div class="summary-item">
+    <span>Savings</span>
+    <p id="total-savings">$ 0.00</p>
+
+  </div>
+
+</section>
+
+<section class="card transactions-section">
+  <div class="transaction-list">
+    <h2>Transactions</h2>
+
+    <select id="category-filter">
+    <option value="all">All Categories</option>
+    <option value="living_expenses">Living Expenses</option>
+    <option value="transportation">Transportation</option>
+    <option value="personal_care">Personal Care</option>
+    <option value="healthcare">Healthcare</option>
+    <option value="technology">Technology</option>
+    <option value="debt-payments">Debt Payments</option>
+    <option value="savings&investments">Savings & Investments</option>
+    <option value="entertainment">Entertainment</option>
+    <option value="miscellaneous">Miscellaneous</option>
+</select>
+
+    <input
+    type="text"
+    id="search-transactions"
+    placeholder="Search transactions..."
+    >
+
+ 
+
+    <ul id="transactions"></ul>
+  </div>
+</section>
+
+</main>
+</div>
+
+
+<script src="script.js"></script>
+</body>
+</html>
