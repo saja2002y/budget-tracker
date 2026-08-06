@@ -5,6 +5,19 @@
 
 const transactions = [];
 
+const icons = {
+income: "cash",
+living_expenses: "cart3",
+transportation: "fuel-pump",
+personal_care: "scissors",
+healthcare: "heart-pulse",
+technology: "display",
+debt_payments: "credit-card",
+savings_investments: "piggy-bank",
+entertainment: "ticket-perforated",
+miscellaneous: "box",
+};
+
 
 // =====================
 // Event Listeners
@@ -25,6 +38,14 @@ const categoryFilter = document.querySelector("#category-filter");
 categoryFilter.addEventListener("change", () => {
   filterTransactions();
 });
+
+const sortFilter = document.querySelector("#sort-filter");
+sortFilter.addEventListener("change", () => {
+  filterTransactions();
+});
+
+
+
 
 // addTransaction()
 
@@ -59,8 +80,6 @@ function addTransaction() {
     date: new Date()
   };
 
-  console.log(transaction);
-  
   transactions.push(transaction);
 
   saveTransactions();
@@ -74,7 +93,7 @@ function addTransaction() {
 function filterTransactions() {
   const searchText = searchInput.value.toLowerCase().trim();
   const selectedCategory = categoryFilter.value;
-
+  const selectedSort = sortFilter.value;
 
   let filteredTransactions = transactions;
 
@@ -92,6 +111,26 @@ function filterTransactions() {
 
   });
 };
+
+  if (selectedSort === "highest") {
+    filteredTransactions.sort((a,b) => 
+      b.amount - a.amount);
+  };
+
+  if (selectedSort === "lowest") {
+    filteredTransactions.sort((a, b) => a.amount - b.amount);
+  };
+
+  if (selectedSort === "newest") {
+    filteredTransactions.sort((a, b) => b.date - a.date);
+  };
+
+  if (selectedSort === "oldest") {
+      filteredTransactions.sort((a, b) => a.date - b.date);
+  };
+
+
+
 
 renderTransactions(filteredTransactions);
 
@@ -116,6 +155,13 @@ function renderTransactions(transactionList) {
     // Create list item
     const li = document.createElement("li");
 
+    const icon = icons[transaction.category] || "cash";
+  
+    const iconSpan = document.createElement("span");
+    iconSpan.classList.add("icon-span");
+
+    iconSpan.innerHTML = `<i class="bi bi-${icon}"></i>`;
+
     const description = document.createElement("span");
     description.textContent = transaction.description;
     description.classList.add("transaction-description");
@@ -132,6 +178,10 @@ function renderTransactions(transactionList) {
 });
 
   date.classList.add("transaction-date");
+
+  const transactionInfo = document.createElement("div");
+  transactionInfo.classList.add("transaction-info");
+
 
     const amount = document.createElement("span");
     amount.classList.add("transaction-amount");
@@ -151,8 +201,13 @@ function renderTransactions(transactionList) {
     const transactionLeft = document.createElement("div");
     transactionLeft.classList.add("transaction-left");
 
-    transactionLeft.append(description);
-    transactionLeft.append(date);
+    
+
+    transactionInfo.append(description);
+    transactionInfo.append(date);
+
+     transactionLeft.append(iconSpan);
+     transactionLeft.append(transactionInfo);
 
     li.append(transactionLeft);
 
@@ -210,6 +265,8 @@ function saveTransactions() {
   localStorage.setItem("transactions", savedTransactions);
 };
 
+// loadTransactions()
+
 function loadTransactions() {
   const savedTransactions = localStorage.getItem("transactions");
 
@@ -217,9 +274,11 @@ function loadTransactions() {
     const loadedTransactions = JSON.parse(savedTransactions);
     
     loadedTransactions.forEach((transaction) => {
+      transaction.date = new Date(transaction.date);
       transactions.push(transaction);
       });
     };
+
     filterTransactions();
 };
 
