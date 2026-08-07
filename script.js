@@ -56,7 +56,6 @@ const categoryInput = document.querySelector("#category");
 
 function addTransaction() {
 
-  console.log("editIndex in addTransaction:", editIndex);
 
   const description = descriptionInput.value;
   const amount = parseFloat(amountInput.value);
@@ -208,8 +207,6 @@ function renderTransactions(transactionList) {
     // Create edit button
     const editButton = document.createElement("button");
     editButton.textContent = "Edit";
-
-    console.log("Editing index:", editIndex);
 
     editButton.addEventListener("click", () => {
       editingTransaction = transaction;
