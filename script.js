@@ -18,6 +18,8 @@ entertainment: "ticket-perforated",
 miscellaneous: "box",
 };
 
+let editingTransaction = null;
+
 
 // =====================
 // Event Listeners
@@ -45,16 +47,20 @@ sortFilter.addEventListener("change", () => {
 });
 
 
+const descriptionInput = document.querySelector("#description");
+const amountInput = document.querySelector("#amount");
+const categoryInput = document.querySelector("#category");
 
 
 // addTransaction()
 
 function addTransaction() {
 
-  const description = document.querySelector("#description").value;
-  const amount = parseFloat(document.querySelector("#amount").value);
-  const categorySelect = document.querySelector("#category");
-  const category = categorySelect.options[categorySelect.selectedIndex].value;
+  console.log("editIndex in addTransaction:", editIndex);
+
+  const description = descriptionInput.value;
+  const amount = parseFloat(amountInput.value);
+  const category = categoryInput.value;
 
 
 
@@ -73,16 +79,26 @@ function addTransaction() {
     return;
   };
 
-  const transaction = {
-    description,
-    amount,
-    category,
-    date: new Date()
+
+  if (editingTransaction !== null) {
+      editingTransaction.description = description;
+      editingTransaction.amount = amount;
+      editingTransaction.category = category;
+  } else {
+    const transaction = {
+      description,
+      amount,
+      category,
+      date: new Date()
   };
-
+  
   transactions.push(transaction);
-
+}
   saveTransactions();
+
+editingTransaction = null;
+
+  button.textContent = "Add Transaction";
 
   filterTransactions();
 
@@ -128,9 +144,6 @@ function filterTransactions() {
   if (selectedSort === "oldest") {
       filteredTransactions.sort((a, b) => a.date - b.date);
   };
-
-
-
 
 renderTransactions(filteredTransactions);
 
@@ -192,6 +205,22 @@ function renderTransactions(transactionList) {
       amount.textContent = `-$${Math.abs(transaction.amount).toFixed(2)}`;
     }
 
+    // Create edit button
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+
+    console.log("Editing index:", editIndex);
+
+    editButton.addEventListener("click", () => {
+      editingTransaction = transaction;
+
+    descriptionInput.value = transaction.description;
+    amountInput.value = transaction.amount;
+    categoryInput.value = transaction.category;
+
+    button.textContent = "Save Changes";
+    });
+
   
     // Create delete button
     const deleteButton = document.createElement('button');
@@ -216,10 +245,12 @@ function renderTransactions(transactionList) {
 
 
     transactionRight.append(amount);
+    transactionRight.append(editButton);
     transactionRight.append(deleteButton);
 
 
     li.append(transactionRight);
+
      
 
     // Delete transaction
