@@ -13,14 +13,24 @@
 </head>
 <body>
 
+<nav class="navbar">
+  <div class="navbar-brand">
+    <i class="bi bi-wallet2"></i>
+    <span>Budget Tracker</span>
+  </div>
+
+    <div class="navbar-links">
+    <a href="#dashboard">Dashboard</a>
+    <a href="#transactions">Transactions</a>
+  </div>
+
+</nav>
+
 
 <div class="container">
 
-  <header>
-    <h1>Budget Tracker</h1>
-  </header>
 
-<main class="dashboard">
+<main class="dashboard" id="dashboard">
 
  <section class="card form-section">
     <form>
@@ -55,28 +65,46 @@
   </form>
 </section> 
 
-<section class="card balance-section">
+<section class="dashboard-summary">
 
-  <div class="summary-balance">
+  <div class="card balance-card">
     <span>Current Balance</span>
     <p id="current-balance">$ 0.00</p>
   </div>
 
+  <div class="card summary-income-expenses">
+
   <div class="summary-item">
-    <span>Income</span>
-    <p id="total-income">$ 0.00</p>
+
+    <div class="summary-icon">
+      <i class="bi bi-graph-up-arrow"></i>
+    </div>
+
+    <div class="summary-info">
+      <span>Income</span>
+      <p id="total-income">$0.00</p>
+    </div>
+
+    <span class="summary-change">+12.5%</span>
+
   </div>
 
   <div class="summary-item">
-    <span>Expenses</span>
-    <p id="total-expenses">$ 0.00</p>
+
+    <div class="summary-icon">
+      <i class="bi bi-graph-down-arrow"></i>
+    </div>
+
+    <div class="summary-info">
+      <span>Expenses</span>
+      <p id="total-expenses">$0.00</p>
+    </div>
+
+    <span class="summary-change">-8.2%</span>
+
   </div>
 
-  <div class="summary-item">
-    <span>Savings</span>
-    <p id="total-savings">$ 0.00</p>
-
-  </div>
+</div>
 
 </section>
 
@@ -110,8 +138,12 @@
 </select>
 
     <select id="sort-filter">
-    <option value=""></option>
-    </select>
+    <option value="">Sort</option>
+    <option value="newest">Newest</option>
+    <option value="oldest">Oldest</option>
+    <option value="highest">Highest Amount</option>
+    <option value="lowest">Lowest Amount</option>
+</select>
 
 </div>
 

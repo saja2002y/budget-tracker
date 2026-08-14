@@ -20,6 +20,11 @@ miscellaneous: "box",
 
 let editingTransaction = null;
 
+const currencyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
+
 
 // =====================
 // Event Listeners
@@ -52,13 +57,17 @@ const amountInput = document.querySelector("#amount");
 const categoryInput = document.querySelector("#category");
 
 
+const incomeElement = document.querySelector("#total-income");
+const expenseElement = document.querySelector("#total-expenses");
+
+
 // addTransaction()
 
 function addTransaction() {
 
 
   const description = descriptionInput.value;
-  const amount = parseFloat(amountInput.value);
+  let amount = parseFloat(amountInput.value);
   const category = categoryInput.value;
 
 
@@ -79,6 +88,15 @@ function addTransaction() {
   };
 
 
+  // Decide if income or expense
+  if (category !== "income") {
+    amount = -Math.abs(amount);
+  } else {
+    amount = Math.abs(amount);
+  };
+
+
+  // Create transaction
   if (editingTransaction !== null) {
       editingTransaction.description = description;
       editingTransaction.amount = amount;
@@ -161,6 +179,11 @@ function renderTransactions(transactionList) {
   // Clear previous items
   list.innerHTML = "";
 
+  if (transactionList.length === 0) {
+    list.innerHTML = "<p>No transactions found</p>";
+    return;
+  };
+
   // Render each transaction
   transactionList.forEach((transaction, index) => {
 
@@ -199,14 +222,15 @@ function renderTransactions(transactionList) {
     amount.classList.add("transaction-amount");
 
     if (transaction.amount >= 0) {
-      amount.textContent = `+$${Math.abs(transaction.amount).toFixed(2)}`;
+      amount.textContent = `+${currencyFormatter.format(transaction.amount)}`;
     } else {
-      amount.textContent = `-$${Math.abs(transaction.amount).toFixed(2)}`;
+      amount.textContent = currencyFormatter.format(transaction.amount);
     }
 
     // Create edit button
     const editButton = document.createElement("button");
-    editButton.textContent = "Edit";
+    editButton.innerHTML = `<i class="bi bi-pencil-square"></i>`;
+    editButton.classList.add("edit-button");
 
     editButton.addEventListener("click", () => {
       editingTransaction = transaction;
@@ -221,7 +245,7 @@ function renderTransactions(transactionList) {
   
     // Create delete button
     const deleteButton = document.createElement('button');
-    deleteButton.textContent = "Delete";
+    deleteButton.innerHTML = `<i class="bi bi-trash3"></i>`
     deleteButton.classList.add("delete-button");
 
     const transactionLeft = document.createElement("div");
@@ -252,9 +276,13 @@ function renderTransactions(transactionList) {
 
     // Delete transaction
   deleteButton.addEventListener('click', () => {
-    transactions.splice(index,1);
-    saveTransactions();
-     filterTransactions();
+    const confirmDelete = confirm("Are you sure you want to delete this transaction?");
+
+    if (confirmDelete){
+        transactions.splice(index,1);
+        saveTransactions();
+        filterTransactions();
+    }
   });
 
 
@@ -271,13 +299,24 @@ function renderTransactions(transactionList) {
 
 function updateBalance() {
   let balance = 0;
+  let income = 0;
+  let expenses = 0;
 
    transactions.forEach((transaction) => {
     balance += transaction.amount;
+
+    if (transaction.amount > 0) {
+      income += transaction.amount;
+    } else {
+      expenses += Math.abs(transaction.amount);
+    }
    });
 
     const balanceElement = document.querySelector("#current-balance");
-    balanceElement.textContent = `$${balance.toFixed(2)}`;
+    balanceElement.textContent = currencyFormatter.format(balance);
+
+    incomeElement.textContent = currencyFormatter.format(income);
+    expenseElement.textContent = currencyFormatter.format(expenses);
 };
 
 // clearForm()
