@@ -1,7 +1,4 @@
-// =====================
 // Global Variables
-// =====================
-
 
 const transactions = [];
 
@@ -26,10 +23,29 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
 });
 
 
-// =====================
-// Event Listeners
-// =====================
 
+// DOM selectors
+
+const descriptionInput = document.querySelector("#description");
+const amountInput = document.querySelector("#amount");
+const categoryInput = document.querySelector("#category");
+
+
+const incomeElement = document.querySelector("#total-income");
+const expenseElement = document.querySelector("#total-expenses");
+
+const deleteModal = document.querySelector(".delete-modal");
+let transactionToDelete = null;
+
+const cancelDelete = document.querySelector(".delete-modal-actions button:first-child");
+const confirmDelete = document.querySelector(".delete-modal-actions button:last-child");
+
+const deleteMessage = document.querySelector("#delete-message"); 
+
+const cancelEdit = document.querySelector("#cancel-edit");
+
+
+// Event Listeners
 
 const button = document.querySelector("#add-transaction");
 button.textContent = "Add Transaction";
@@ -51,14 +67,33 @@ sortFilter.addEventListener("change", () => {
   filterTransactions();
 });
 
+cancelDelete.addEventListener("click", () => {
+  deleteModal.classList.remove("show");
+  transactionToDelete = null;
+});
 
-const descriptionInput = document.querySelector("#description");
-const amountInput = document.querySelector("#amount");
-const categoryInput = document.querySelector("#category");
+confirmDelete.addEventListener("click", () => {
+    transactions.splice(transactionToDelete,1);
+    saveTransactions();
+    filterTransactions();
+    deleteModal.classList.remove("show");
+    transactionToDelete = index;
+  });
+
+  deleteModal.addEventListener("click", (event) => {
+    if (event.target === deleteModal) {
+      deleteModal.classList.remove("show");
+    }
+  });
+
+  cancelEdit.addEventListener("click", () => {
+    editIndex = null;
+    clearForm();
+    button.textContent = "Add Transaction";
+    cancelEdit.style.display = "none";
+  });
 
 
-const incomeElement = document.querySelector("#total-income");
-const expenseElement = document.querySelector("#total-expenses");
 
 
 // addTransaction()
@@ -240,6 +275,7 @@ function renderTransactions(transactionList) {
     categoryInput.value = transaction.category;
 
     button.textContent = "Save Changes";
+    cancelEdit.style.display = "inline-block";
     });
 
   
@@ -276,13 +312,9 @@ function renderTransactions(transactionList) {
 
     // Delete transaction
   deleteButton.addEventListener('click', () => {
-    const confirmDelete = confirm("Are you sure you want to delete this transaction?");
-
-    if (confirmDelete){
-        transactions.splice(index,1);
-        saveTransactions();
-        filterTransactions();
-    }
+      transactionToDelete = index;
+      deleteMessage.innerHTML = `Are you sure you want to delete <strong>"${transaction.description}"</strong>?`;
+      deleteModal.classList.add("show");
   });
 
 

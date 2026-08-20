@@ -80,15 +80,37 @@ input, select {
    box-sizing: border-box;
 }
 
-
 #add-transaction{
   align-self: center;
-  width: 50%;
+  width: 150px;
   padding: 15px;
   border: 0px;
   border-radius: 5px;
   margin-top: 15px;
   background-color: #EED1F8 ;
+  cursor: pointer;
+}
+
+#cancel-edit {
+  display: none;
+  width: 150px;
+  padding: 15px;
+  border: 0px;
+  border-radius: 5px;
+  margin-top: 15px;
+  cursor: pointer;
+  background: #F2F2F2;
+  color: #333;
+}
+
+#cancel-edit:hover {
+  background: #e6e6e6;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 
@@ -255,7 +277,6 @@ h2 {
 }
 
 .edit-button:hover {
-  color: #515151;
   opacity: 0.9;
 }
 
@@ -270,7 +291,6 @@ h2 {
 }
 
 .delete-button:hover {
-  color: #515151;
   opacity: 0.9;
 }
 
@@ -298,5 +318,71 @@ h2 {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.delete-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-modal.show {
+  display: flex;
+}
+
+.delete-modal-content {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  width: 400px;
+}
+
+.delete-modal-content h3 {
+  margin-bottom: 10px;
+}
+
+.delete-modal-content p {
+  margin-bottom: 25px;
+}
+
+.delete-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.delete-modal-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.delete-modal-actions button:first-child {
+  background: #e6eaf3;
+  color: #333;
+}
+
+.delete-modal-actions button:last-child {
+  background: #F5CE62;
+  color: black;
+}
+.delete-modal-actions button:first-child:hover {
+  background: #d5d9e2;
+}
+
+.delete-modal-actions button:last-child:hover {
+  background: #ecc24e;
+}
+
+.delete-modal-actions button {
+  transition: background 0.2s ease;
+}
+
+.delete-modal-content h3 i {
+  margin-right: 8px;
 }
 
