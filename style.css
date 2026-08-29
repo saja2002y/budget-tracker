@@ -1,5 +1,5 @@
 body {
-  background-color: #F2F2F2;
+  background-color: #F0F0F0;
   color: #19183B;
     font-family: "Nunito", sans-serif;
 }
@@ -13,21 +13,47 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 20px 35px;
-  background-color: #177E89;
-  color:white;
 }
 
-.navbar-brand {
-  font-size: 1.5rem;
+.navbar-logo img {
+  width: 200px;
+  margin-left: 20px;
+   margin-top: 10px;
 }
+
+.navbar-links {
+  display: flex;
+  gap: 0px;
+  border: 1px solid #BEBEBE;
+  border-radius: 25px;
+}
+
 
 .navbar-links a {
   text-decoration: none;
-  padding: 10px;
-  color:white;
+  padding: 10px 20px;
+  color: black;
+  border-radius: 25px;
   font-size: 1rem;
+  transition: background-color 0.2s ease;
 }
 
+
+.navbar-links a:hover {
+  background-color: #E7E7E7;
+}
+
+.navbar-links a:first-child {
+  border-radius: 25px 0 0 25px;
+}
+
+.navbar-links a:not(:first-child):not(:last-child) {
+  border-radius: 0;
+}
+
+.navbar-links a:last-child {
+  border-radius: 0 25px 25px 0;
+}
 
 .container {
   max-width: 1000px;
@@ -40,7 +66,7 @@ body {
   grid-template-columns: 50% 50%;
   gap: 20px;
   align-items: stretch;
-  margin-top: 35px;
+  margin-top: 20px;
 }
 
 
@@ -51,7 +77,7 @@ body {
 .card {
     padding-top: 25px;
     padding-bottom: 15px;
-    border-radius: 10px;
+    border-radius: 25px;
     background-color: white;
     padding-left: 30px;
     padding-right: 30px;
@@ -73,7 +99,7 @@ form {
 input, select {
   width: 100%;
   padding: 12px;
-  font-size: 16px;
+  font-size: 1rem;
   font-family: "Nunito", sans-serif;
   border-radius: 10px;
    border: 1px solid #BEBEBE;
@@ -85,18 +111,25 @@ input, select {
   width: 150px;
   padding: 15px;
   border: 0px;
-  border-radius: 5px;
+  border-radius: 10px;
   margin-top: 15px;
-  background-color: #EED1F8 ;
+  background-color: #7E86D9;
+  color: white;
   cursor: pointer;
+  font-weight: 500;
 }
+
+#add-transaction:hover {
+  background: #747bc9;
+}
+
 
 #cancel-edit {
   display: none;
   width: 150px;
   padding: 15px;
   border: 0px;
-  border-radius: 5px;
+  border-radius: 10px;
   margin-top: 15px;
   cursor: pointer;
   background: #F2F2F2;
@@ -125,11 +158,12 @@ input, select {
 }
 
 .balance-card span {
-  color: #177E89;
+  color: black;
+  font-size: 1.5rem;
 }
 
 #current-balance {
-  font-size: 45px;
+  font-size: 3rem;
   margin-top: 5px;
   margin-bottom: 0;
 }
@@ -155,7 +189,6 @@ input, select {
   margin-right: 20px;
   font-size: 1.8rem;
   color: black;
-  background-color: #F6F6F6;
   width: 65px;
   height: 65px;
   border-radius: 50%;
@@ -164,10 +197,12 @@ input, select {
   justify-content: center;
 }
 
+.summary-item:first-child .summary-icon {
+  background: #CBE896;
+}
 
-.summary-info span {
-  color: #177E89;
-  font-size: 1rem;
+.summary-item:last-child .summary-icon {
+  background: #FDD69B;
 }
 
 #total-income {
@@ -180,7 +215,6 @@ input, select {
 
 .summary-change {
   margin-left: auto;
-  color: #177E89;
 }
 
 .summary-info p {
@@ -193,7 +227,6 @@ input, select {
 
 
 h2 {
-  color:#177E89;
   font-weight: 500;
 }
 
@@ -207,7 +240,7 @@ h2 {
 #category-filter,
 #sort-filter {
     padding: 10px 14px 10px 14px;
-    border-radius: 8px;
+    border-radius: 10px;
     background-color: #F6F6F6;
 }
 
@@ -231,6 +264,7 @@ h2 {
     cursor: pointer; 
     border: none;
     outline: none;
+    color: #535353;
 }
 
 
@@ -311,7 +345,7 @@ h2 {
 
 .icon-span {
     font-size: 1.2rem;
-    background-color: #F5CE62;
+    background-color: #D2D6FE;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -336,7 +370,7 @@ h2 {
 .delete-modal-content {
   background: white;
   padding: 25px;
-  border-radius: 12px;
+  border-radius: 18px;
   width: 400px;
 }
 
@@ -357,7 +391,7 @@ h2 {
 .delete-modal-actions button {
   padding: 8px 16px;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
 }
 
@@ -367,15 +401,15 @@ h2 {
 }
 
 .delete-modal-actions button:last-child {
-  background: #F5CE62;
-  color: black;
+  background: #7E86D9;
+  color: white;
 }
 .delete-modal-actions button:first-child:hover {
   background: #d5d9e2;
 }
 
 .delete-modal-actions button:last-child:hover {
-  background: #ecc24e;
+  background: #7279C6;
 }
 
 .delete-modal-actions button {

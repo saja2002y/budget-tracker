@@ -349,7 +349,71 @@ function updateBalance() {
 
     incomeElement.textContent = currencyFormatter.format(income);
     expenseElement.textContent = currencyFormatter.format(expenses);
+
+    updateSummaryChange();
 };
+
+
+function updateSummaryChange() {
+  const today = new Date();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+
+  const lastMonth = new Date(currentYear, currentMonth -1);
+
+
+  const currentMonthTransactions = transactions.filter((transaction) => {
+    return transaction.date.getMonth() === currentMonth && transaction.date.getFullYear() === currentYear;  
+});
+
+const lastMonthTransactions = transactions.filter((transaction) => {
+  return transaction.date.getMonth() === lastMonth.getMonth() && transaction.date.getFullYear() === lastMonth.getFullYear();  
+});
+
+const currentIncome = currentMonthTransactions
+.filter(transaction => transaction.amount > 0)
+.reduce((total, transaction) => total + transaction.amount, 0);
+
+const currentExpenses = currentMonthTransactions
+.filter(transaction => transaction.amount < 0)
+.reduce((total, transaction) => total + Math.abs(transaction.amount), 0);
+
+const lastIncome = lastMonthTransactions
+.filter(transaction => transaction.amount > 0)
+.reduce((total, transaction) => total + transaction.amount,0);
+
+const lastExpenses = lastMonthTransactions
+.filter(transaction => transaction.amount < 0)
+.reduce((total, transaction) => total + Math.abs(transaction.amount), 0);
+
+let incomeChange;
+
+if (lastIncome === 0) {
+  incomeChange = "N/A";
+} else {
+  incomeChange = ((currentIncome - lastIncome) / lastIncome) * 100;
+}
+
+if (lastExpenses === 0) {
+  expensesChange = "N/A";
+} else {
+  expensesChange = ((lastExpenses - currentExpenses) / lastExpenses) * 100;
+}
+
+const summaryChanges = document.querySelectorAll(".summary-change");
+
+summaryChanges[0].textContent =
+  incomeChange === "N/A" 
+  ? "N/A" 
+  : `${incomeChange > 0 ? "+" : ""}${incomeChange.toFixed(1)}%`;
+
+summaryChanges[1].textContent =
+  expensesChange === "N/A" 
+  ? "N/A" 
+  : `${expensesChange > 0 ? "+" : ""}${expensesChange.toFixed(1)}%`;
+
+
+}
 
 // clearForm()
 
