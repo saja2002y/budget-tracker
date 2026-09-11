@@ -53,7 +53,6 @@
       <option value="transportation">Transportation expenses</option>
       <option value="personal_care">Personal care</option>
       <option value="healthcare">Healthcare</option>
-      <option value="technology">Technology</option>
       <option value="debt_payments">Debt payments</option>
       <option value="savings_investments">Savings and investments</option>
       <option value="entertainment">Entertainment</option>
@@ -133,7 +132,6 @@
     <option value="transportation">Transportation</option>
     <option value="personal_care">Personal Care</option>
     <option value="healthcare">Healthcare</option>
-    <option value="technology">Technology</option>
     <option value="debt_payments">Debt Payments</option>
     <option value="savings_investments">Savings & Investments</option>
     <option value="entertainment">Entertainment</option>
@@ -172,10 +170,25 @@
 </div>
 </section>
 
+<section class="reports-section">
+
+  <div class="card reports-chart">
+
+    <div class="reports-header">
+      <h2>Spending by Category</h2>
+      
+      <p id="report-total-spending">
+        <strong>$0.00</strong> spent this month</p>
+    </div>
+
+    <canvas id="spending-chart"></canvas>
+  </div>
+</section>
+
 </main>
 </div>
 
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
