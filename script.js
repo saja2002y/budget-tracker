@@ -8,11 +8,21 @@ living_expenses: "cart3",
 transportation: "fuel-pump",
 personal_care: "scissors",
 healthcare: "heart-pulse",
-technology: "display",
 debt_payments: "credit-card",
 savings_investments: "piggy-bank",
 entertainment: "ticket-perforated",
 miscellaneous: "box",
+};
+
+const categoryNames = {
+  living_expenses: "Living Expenses",
+  transportation: "Transportation",
+  personal_care: "Personal Care",
+  healthcare: "Healthcare",
+  debt_payments: "Debt Payments",
+  savings_investments: "Savings & Investments",
+  entertainment: "Entertainment",
+  miscellaneous: "Miscellaneous"
 };
 
 let editingTransaction = null;
@@ -21,6 +31,8 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
 });
+
+let spendingChart;
 
 
 
@@ -43,6 +55,8 @@ const confirmDelete = document.querySelector(".delete-modal-actions button:last-
 const deleteMessage = document.querySelector("#delete-message"); 
 
 const cancelEdit = document.querySelector("#cancel-edit");
+
+const exportButton = document.querySelector("#export-csv");
 
 
 // Event Listeners
@@ -93,6 +107,23 @@ confirmDelete.addEventListener("click", () => {
     cancelEdit.style.display = "none";
   });
 
+  exportButton.addEventListener("click", () => {
+    let csv = "Description,Amount,Category,Date\n";
+
+    transactions.forEach(transaction => {
+      const date = new Date(transaction.date).toLocaleDateString();
+
+      csv += `${transaction.description},${transaction.amount},${transaction.category},${date}\n`;
+    });
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "budget-transactions.csv";
+    link.click();
+  });
 
 
 
@@ -351,6 +382,7 @@ function updateBalance() {
     expenseElement.textContent = currencyFormatter.format(expenses);
 
     updateSummaryChange();
+    updateSpendingChart();
 };
 
 
@@ -377,6 +409,11 @@ const currentIncome = currentMonthTransactions
 const currentExpenses = currentMonthTransactions
 .filter(transaction => transaction.amount < 0)
 .reduce((total, transaction) => total + Math.abs(transaction.amount), 0);
+
+const reportTotalSpending = document.querySelector("#report-total-spending");
+
+reportTotalSpending.innerHTML =
+  `<strong>${currencyFormatter.format(currentExpenses)}</strong> spent this month`;
 
 const lastIncome = lastMonthTransactions
 .filter(transaction => transaction.amount > 0)
@@ -412,7 +449,6 @@ summaryChanges[1].textContent =
   ? "N/A" 
   : `${expensesChange > 0 ? "+" : ""}${expensesChange.toFixed(1)}%`;
 
-
 }
 
 // clearForm()
@@ -444,6 +480,100 @@ function loadTransactions() {
 
     filterTransactions();
 };
+
+
+function updateSpendingChart() {
+  const categoryTotals = {};
+
+  transactions.forEach((transaction) => {
+    if (transaction.amount < 0) {
+      const category = transaction.category;
+      const amount = Math.abs(transaction.amount);
+
+      if (categoryTotals[category]) {
+        categoryTotals[category] += amount;
+      } else {
+        categoryTotals[category] = amount;
+      }
+    }
+  });
+
+  const chartData = Object.entries(categoryTotals).map(([category, amount]) => { return {
+      category: category,
+      amount: amount
+  };
+  });
+
+const chart = document.querySelector("#spending-chart");
+
+if (spendingChart) {
+  spendingChart.destroy();
+}
+
+spendingChart = new Chart(chart, {
+  type: "bar",
+  data: {
+    labels: chartData.map(item => categoryNames[item.category]),
+    datasets: [{
+      label: "Spending",
+      data: chartData.map(item => item.amount),
+      borderRadius: 20,
+      barPercentage: 0.9,
+      categoryPercentage: 0.7,
+      backgroundColor: "#7E86D9"
+    }]
+  },
+
+    options: {
+      plugins: {
+      legend: {
+        display: false
+      },
+
+      tooltip: {
+      callbacks: {
+      label: function(context) {
+        return "$" + context.raw;
+      }
+    }
+  }
+    },
+
+  scales: {
+    y: {
+      beginAtZero: true,
+      grid: {
+        display: false
+      },
+      ticks: {
+      color: "black",
+      callback: function(value) {
+      return "$" + value;
+       },
+       padding: 15,
+       maxTicksLimit: 7
+      }
+    },
+
+    x: {
+      grid: {
+        display: false
+      },
+          ticks: {
+      color: "black",
+      padding: 15
+    }
+  }
+}
+}
+});
+}
+
+
+
+
+
+
 
 loadTransactions();
 
