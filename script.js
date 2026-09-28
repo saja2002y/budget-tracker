@@ -113,7 +113,7 @@ confirmDelete.addEventListener("click", () => {
     transactions.forEach(transaction => {
       const date = new Date(transaction.date).toLocaleDateString();
 
-      csv += `${transaction.description},${transaction.amount},${transaction.category},${date}\n`;
+      csv += `"${transaction.description}",${transaction.amount},${transaction.category},${date}\n`;
     });
 
     const blob = new Blob([csv], { type: "text/csv" });
@@ -172,7 +172,7 @@ function addTransaction() {
       description,
       amount,
       category,
-      date: new Date()
+      date: new Date("2026-08-15")
   };
   
   transactions.push(transaction);
@@ -259,7 +259,14 @@ function renderTransactions(transactionList) {
     const icon = icons[transaction.category] || "cash";
   
     const iconSpan = document.createElement("span");
+  
     iconSpan.classList.add("icon-span");
+
+    if (transaction.category === "income") {
+      iconSpan.classList.add("income-icon");
+    } else {
+      iconSpan.classList.add("expense-icon");
+    }
 
     iconSpan.innerHTML = `<i class="bi bi-${icon}"></i>`;
 
@@ -288,11 +295,12 @@ function renderTransactions(transactionList) {
     amount.classList.add("transaction-amount");
 
     if (transaction.amount >= 0) {
-      amount.textContent = `+${currencyFormatter.format(transaction.amount)}`;
-    } else {
-      amount.textContent = currencyFormatter.format(transaction.amount);
-    }
-
+     amount.textContent = `+${currencyFormatter.format(transaction.amount)}`;
+  amount.classList.add("income-amount");
+} else {
+  amount.textContent = currencyFormatter.format(transaction.amount);
+  amount.classList.add("expense-amount");
+}
     // Create edit button
     const editButton = document.createElement("button");
     editButton.innerHTML = `<i class="bi bi-pencil-square"></i>`;
@@ -423,16 +431,21 @@ const lastExpenses = lastMonthTransactions
 .filter(transaction => transaction.amount < 0)
 .reduce((total, transaction) => total + Math.abs(transaction.amount), 0);
 
+console.log("Current income:", currentIncome);
+console.log("Last income:", lastIncome);
+console.log("Current expenses:", currentExpenses);
+console.log("Last expenses:", lastExpenses);
+
 let incomeChange;
 
 if (lastIncome === 0) {
-  incomeChange = "N/A";
+  incomeChange = "New";
 } else {
   incomeChange = ((currentIncome - lastIncome) / lastIncome) * 100;
 }
 
 if (lastExpenses === 0) {
-  expensesChange = "N/A";
+  expensesChange = "New";
 } else {
   expensesChange = ((lastExpenses - currentExpenses) / lastExpenses) * 100;
 }
@@ -440,16 +453,25 @@ if (lastExpenses === 0) {
 const summaryChanges = document.querySelectorAll(".summary-change");
 
 summaryChanges[0].textContent =
-  incomeChange === "N/A" 
-  ? "N/A" 
+  incomeChange === "New" 
+  ? "New" 
   : `${incomeChange > 0 ? "+" : ""}${incomeChange.toFixed(1)}%`;
 
 summaryChanges[1].textContent =
-  expensesChange === "N/A" 
-  ? "N/A" 
+  expensesChange === "New" 
+  ? "New" 
   : `${expensesChange > 0 ? "+" : ""}${expensesChange.toFixed(1)}%`;
 
+  console.log("Current month transactions:", currentMonthTransactions);
+
+  console.log("Current expenses:", currentExpenses);
+
+  console.log("Current expenses:", currentExpenses);
+console.log("Last expenses:", lastExpenses);
+console.log("Expense change:", expensesChange);
 }
+
+
 
 // clearForm()
 
@@ -506,6 +528,8 @@ function updateSpendingChart() {
 
 const chart = document.querySelector("#spending-chart");
 
+const isMobile = window.innerWidth <= 768;
+
 if (spendingChart) {
   spendingChart.destroy();
 }
@@ -518,13 +542,17 @@ spendingChart = new Chart(chart, {
       label: "Spending",
       data: chartData.map(item => item.amount),
       borderRadius: 20,
-      barPercentage: 0.9,
-      categoryPercentage: 0.7,
+      barPercentage: isMobile ? 0.9 : 0.7,
+      categoryPercentage: isMobile ? 0.9 : 0.8,
       backgroundColor: "#7E86D9"
     }]
   },
 
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: isMobile ? "y" : "x",
+
       plugins: {
       legend: {
         display: false
@@ -539,29 +567,41 @@ spendingChart = new Chart(chart, {
   }
     },
 
-  scales: {
-    y: {
-      beginAtZero: true,
-      grid: {
-        display: false
-      },
-      ticks: {
-      color: "black",
-      callback: function(value) {
-      return "$" + value;
-       },
-       padding: 15,
-       maxTicksLimit: 7
-      }
+    scales: {
+  x: {
+    grid: {
+      display: false
     },
-
-    x: {
-      grid: {
-        display: false
-      },
-          ticks: {
+    ticks: {
       color: "black",
-      padding: 15
+      padding: 15,
+      maxRotation: isMobile ? 0 : 0,
+      minRotation: isMobile ? 0 : 0,
+      callback: function(value) {
+        if (isMobile) {
+          return "$" + value;
+        }
+
+        return this.getLabelForValue(value);
+      }
+    }
+  },
+
+  y: {
+    grid: {
+      display: false
+    },
+    ticks: {
+      color: "black",
+      padding: isMobile ? 20 : 15,
+      callback: function(value) {
+        if (isMobile) {
+          return this.getLabelForValue(value);
+        }
+
+        return "$" + value;
+      },
+      maxTicksLimit: 7
     }
   }
 }
@@ -569,12 +609,29 @@ spendingChart = new Chart(chart, {
 });
 }
 
-
-
-
-
-
-
 loadTransactions();
+
+updateSpendingChart();
+
+let resizeTimeout;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimeout);
+
+  resizeTimeout = setTimeout(() => {
+    updateSpendingChart();
+  }, 200);
+});
+
+function updateBalanceDate() {
+  const currentDate = new Date();
+
+  document.getElementById("balance-date").textContent =
+    currentDate.toLocaleDateString("en-US", {
+      month: "short",
+      year: "numeric"
+    });
+}
+
+updateBalanceDate();
 
 

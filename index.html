@@ -34,6 +34,7 @@
 
  <section class="card form-section">
     <form>
+      <h2 id="form-title">Add Transaction</h2>
     <div class="form-group">
     <label for="description">Description:</label>
     <input type="text" id="description" placeholder="Enter a description">
@@ -174,12 +175,19 @@
 
   <div class="card reports-chart">
 
-    <div class="reports-header">
-      <h2>Spending by Category</h2>
-      
-      <p id="report-total-spending">
-        <strong>$0.00</strong> spent this month</p>
-    </div>
+   <div class="reports-header">
+
+  <div class="reports-title">
+   <h2>
+     <i class="bi bi-bar-chart"></i>
+    Spending by Category
+  </h2>
+    <p id="report-total-spending"><strong>$0.00</strong>spent this month</p>
+  </div>
+
+  <button id="export-csv">Export CSV</button>
+
+</div>
 
     <canvas id="spending-chart"></canvas>
   </div>
