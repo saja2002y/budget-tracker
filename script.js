@@ -104,6 +104,8 @@ confirmDelete.addEventListener("click", () => {
     editIndex = null;
     clearForm();
     button.textContent = "Add Transaction";
+    document.querySelector("#form-title").innerHTML =
+    '<i class="bi bi-plus-circle section-icon"></i>Add Transaction';
     cancelEdit.style.display = "none";
   });
 
@@ -167,12 +169,14 @@ function addTransaction() {
       editingTransaction.description = description;
       editingTransaction.amount = amount;
       editingTransaction.category = category;
+
+      cancelEdit.style.display = "none";
   } else {
     const transaction = {
       description,
       amount,
       category,
-      date: new Date("2026-08-15")
+      date: new Date()
   };
   
   transactions.push(transaction);
@@ -182,6 +186,11 @@ function addTransaction() {
 editingTransaction = null;
 
   button.textContent = "Add Transaction";
+
+  document.querySelector("#form-title").innerHTML =
+  '<i class="bi bi-plus-circle section-icon"></i>Add Transaction';
+
+
 
   filterTransactions();
 
@@ -309,6 +318,9 @@ function renderTransactions(transactionList) {
     editButton.addEventListener("click", () => {
       editingTransaction = transaction;
 
+    document.querySelector("#form-title").innerHTML =
+  '<i class="bi bi-pencil-square section-icon"></i>Edit Transaction';
+
     descriptionInput.value = transaction.description;
     amountInput.value = transaction.amount;
     categoryInput.value = transaction.category;
@@ -431,10 +443,6 @@ const lastExpenses = lastMonthTransactions
 .filter(transaction => transaction.amount < 0)
 .reduce((total, transaction) => total + Math.abs(transaction.amount), 0);
 
-console.log("Current income:", currentIncome);
-console.log("Last income:", lastIncome);
-console.log("Current expenses:", currentExpenses);
-console.log("Last expenses:", lastExpenses);
 
 let incomeChange;
 
@@ -453,22 +461,14 @@ if (lastExpenses === 0) {
 const summaryChanges = document.querySelectorAll(".summary-change");
 
 summaryChanges[0].textContent =
-  incomeChange === "New" 
-  ? "New" 
-  : `${incomeChange > 0 ? "+" : ""}${incomeChange.toFixed(1)}%`;
+  incomeChange === "New"
+    ? "New"
+    : `${incomeChange >= 0 ? "↑" : "↓"} ${Math.abs(incomeChange).toFixed(1)}%`;
 
 summaryChanges[1].textContent =
-  expensesChange === "New" 
-  ? "New" 
-  : `${expensesChange > 0 ? "+" : ""}${expensesChange.toFixed(1)}%`;
-
-  console.log("Current month transactions:", currentMonthTransactions);
-
-  console.log("Current expenses:", currentExpenses);
-
-  console.log("Current expenses:", currentExpenses);
-console.log("Last expenses:", lastExpenses);
-console.log("Expense change:", expensesChange);
+  expensesChange === "New"
+    ? "New"
+    : `${expensesChange < 0 ? "↑" : "↓"} ${Math.abs(expensesChange).toFixed(1)}%`;
 }
 
 
@@ -575,6 +575,7 @@ spendingChart = new Chart(chart, {
     ticks: {
       color: "black",
       padding: 15,
+      maxTicksLimit: isMobile ? 4 : 7,
       maxRotation: isMobile ? 0 : 0,
       minRotation: isMobile ? 0 : 0,
       callback: function(value) {
